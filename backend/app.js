@@ -18,8 +18,8 @@ app.use(
     })
 );
 
-var userRouter = require('./routes/user');
 
+var userRouter = require('./routes/user');
 app.use('/',userRouter);
 
 
