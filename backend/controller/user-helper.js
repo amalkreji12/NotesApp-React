@@ -7,7 +7,7 @@ module.exports = {
     doSignUp(userDetails, res) {
         return new Promise(async (resolve, reject) => {
             try {
-                userDetails.password = await bcrypt.hash(userDetails.password,10);
+                userDetails.password = await bcrypt.hash(userDetails.password, 10);
 
                 let isUserExist = await User.findOne({ email: userDetails.email });
                 if (isUserExist) {
@@ -26,15 +26,24 @@ module.exports = {
         });
     },
 
-    // doLogin(userDetails) {
-    //     return new Promise(async(resolve,reject) => {
-    //        let user = await User.findOne({email:userDetails.email});
-    //        if(user){
+    doLogin(userDetails) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let user = await User.findOne({ email: userDetails.email });
+                if (user) {
+                    bcrypt.compare(userDetails.password, user.password).then((response) => {
+                        resolve(response);
+                    })
+                } else {
+                    resolve(false);
+                }
 
-    //        }
-        
-    //     })
-    // }
+            } catch (error) {
+                console.error('Error creating user', error);
+                reject(error);
+            }
+        });
+    },
 
 
 

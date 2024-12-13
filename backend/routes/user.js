@@ -34,17 +34,38 @@ router.post('/signup', async (req, res) => {
     });
 });
 
-router.post('/login', (req,res) => {
+router.post('/login', (req, res) => {
     const { email, password } = req.body;
 
-    if(!email) {
-        return res.status(400).json({message: "Invalid email"});
+    if (!email) {
+        return res.status(400).json({ message: "Invalid email" });
     }
 
-    if(!password) {
-        return res.status(400).json({message: "Invalid password"});
+    if (!password) {
+        return res.status(400).json({ message: "Invalid password" });
     }
-    
+
+    userHelper.doLogin({ email, password }).then((userDetails) => {
+        if (userDetails) {
+            const user = { user: userDetails };
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOEN_SECRET, {
+                expiresIn: "36000m",
+            });
+
+            return res.json({
+                error: false,
+                message: "Login Success",
+                email,
+                accessToken
+            });
+        } else {
+            return res.status(400).json({
+                error:true,
+                message: "Login Failure",
+            });
+        }
+
+    })
 })
 
 
