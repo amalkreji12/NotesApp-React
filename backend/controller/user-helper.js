@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Note = require('../models/noteModel');
 
 module.exports = {
 
@@ -32,7 +33,7 @@ module.exports = {
                 let user = await User.findOne({ email: userDetails.email });
                 if (user) {
                     bcrypt.compare(userDetails.password, user.password).then((response) => {
-                        resolve(response);
+                        resolve(user);
                     })
                 } else {
                     resolve(false);
@@ -45,6 +46,25 @@ module.exports = {
         });
     },
 
+
+    addNote(noteDetails,userId) {
+        return new Promise(async (resolve,reject) => {
+            try {
+                const note = new Note({
+                    title: noteDetails.title,
+                    content: noteDetails.content,
+                    tags: noteDetails.tags || [],
+                    userId: userId,
+                })
+                await note.save();
+                resolve(note);
+                          
+            } catch (error) {
+                console.error('Error creating user', error);
+                reject(error); 
+            }
+        });
+    }
 
 
 
