@@ -87,9 +87,33 @@ module.exports = {
                 reject(error);
             }
         })
-    }
+    },
 
 
+    getAllNotesByUserId(userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const note = await Note.find({ userId: userId }).sort({ isPinned: -1 });
+                resolve(note);
+            } catch (error) {
+                console.error('Error creating user', error);
+                reject(error);
+            }
+        });
+    },
+
+
+    deleteNoteByUserId(noteId, userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const note = await Note.findOneAndDelete({ _id: noteId, userId: userId });
+                resolve(note);
+            } catch (error) {
+                console.error('Error deleting note', error);
+                reject(error);
+            };
+        })
+    },
 
 
 

@@ -94,7 +94,6 @@ router.post('/add-note', authenticateToken, (req, res) => {
     }
 
     userHelper.addNote({ title, content, tags }, userId).then((note) => {
-        console.log(note);
         res.json({
             error: false,
             note,
@@ -131,9 +130,50 @@ router.put('/edit-note/:noteId', authenticateToken, (req, res) => {
                 message: "Error updating note", err
             });
         });
+});
+
+
+router.get('/notes', authenticateToken, (req, res) => {
+    const user = req.user;
+    const userId = user.user._id;
+
+    userHelper.getAllNotesByUserId(userId).then((notes) => {
+        return res.json({
+            error: false,
+            notes,
+            message: "Notes found successfully",
+        })
+    })
+        .catch((err) => {
+            return res.json({
+                error: true,
+                message: "Error finding notes",
+            });
+        });
+});
+
+
+router.delete('/delete-note/:noteId', authenticateToken, async (req, res) => {
+    const noteId = req.params.noteId;
+    const userId = req.user.user._id;
+
+    try {
+        const deleteNote = await userHelper.deleteNoteByUserId(noteId, userId);
+        if (!deleteNote) {
+            return res.status(404).json({ error: true, message: "Note not found" });
+        }
+        return res.json({
+            error: false,
+            message: "Note deleted successfully",
+        })
+    } catch (error) {
+        console.error("Error deleting note:", err);
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
+        });
+    };
 })
-
-
 
 
 
