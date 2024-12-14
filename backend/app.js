@@ -20,7 +20,11 @@ app.use(
 
 
 var userRouter = require('./routes/user');
+var authRouter = require('./routes/auth');
+
 app.use('/',userRouter);
+app.use('/',authRouter);
+
 
 
 app.listen(port,() => {
