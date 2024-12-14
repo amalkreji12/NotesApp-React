@@ -25,9 +25,9 @@ router.post('/signup', async (req, res) => {
     };
 
     userHelper.doSignUp({ fullName, email, password }, res).then((user) => {
-        console.log('usersignUp :',user);
-        
-        const accessToken = jwt.sign({ user :{_id:user._id,email:user.email} }, process.env.ACCESS_TOKEN_SECRET, {
+        console.log('usersignUp :', user);
+
+        const accessToken = jwt.sign({ user: { _id: user._id, email: user.email } }, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: "36000m",
         });
 
@@ -53,7 +53,7 @@ router.post('/login', (req, res) => {
 
     userHelper.doLogin({ email, password }).then((userDetails) => {
         if (userDetails) {
-            console.log('userdetails:',userDetails);
+            console.log('userdetails:', userDetails);
             const user = { user: userDetails };
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
                 expiresIn: "36000m",
@@ -65,10 +65,10 @@ router.post('/login', (req, res) => {
                 email,
                 accessToken,
             });
-            
+
         } else {
             return res.status(400).json({
-                error:true,
+                error: true,
                 message: "Login Failure",
             });
         }
@@ -76,37 +76,61 @@ router.post('/login', (req, res) => {
     })
 });
 
-router.post('/add-note',authenticateToken, (req,res) => {
+router.post('/add-note', authenticateToken, (req, res) => {
     const { title, content, tags } = req.body;
-    const  user  = req.user;
+    const user = req.user;
     const userId = user.user._id
 
     if (!user || !userId) {
         return res.status(401).json({ error: true, message: "Unauthorized: User not found" });
     }
 
-    if(!title) {
+    if (!title) {
         return res.status(400).json({ error: true, message: "Please enter a title" });
     }
 
-    if(!content) {
+    if (!content) {
         return res.status(400).json({ error: true, message: "Please enter a content" });
     }
 
-    userHelper.addNote({title, content, tags},userId).then((note) => {
+    userHelper.addNote({ title, content, tags }, userId).then((note) => {
         console.log(note);
         res.json({
-            error:false,
+            error: false,
             note,
-            message:"Note added successfully"
+            message: "Note added successfully"
         });
     })
-    .catch((error) => {
-        res.status(500).json({
-            error:true,
-            message:"Error adding note"
+        .catch((error) => {
+            res.status(500).json({
+                error: true,
+                message: "Error adding note"
+            });
         });
-    });
+});
+
+
+router.put('/edit-note/:noteId', authenticateToken, (req, res) => {
+    const noteId = req.params.noteId;
+    const { title, content, tags, isPinned } = req.body;
+
+    if (!title && !content && !tags) {
+        return res.status(400).json({ error: true, message: "No changes were made" });
+    }
+
+    userHelper.editNote({ title, content, tags, isPinned }, noteId).then((note) => {
+        res.json({
+            eroor: false,
+            note,
+            message: "Note updated successfully"
+        })
+    })
+        .catch((err) => {
+            return res.status(500).json({
+                error: true,
+                message: "Error updating note", err
+            });
+        });
 })
 
 

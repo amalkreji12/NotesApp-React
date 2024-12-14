@@ -47,8 +47,8 @@ module.exports = {
     },
 
 
-    addNote(noteDetails,userId) {
-        return new Promise(async (resolve,reject) => {
+    addNote(noteDetails, userId) {
+        return new Promise(async (resolve, reject) => {
             try {
                 const note = new Note({
                     title: noteDetails.title,
@@ -58,12 +58,35 @@ module.exports = {
                 })
                 await note.save();
                 resolve(note);
-                          
+
             } catch (error) {
                 console.error('Error creating user', error);
-                reject(error); 
+                reject(error);
             }
         });
+    },
+
+
+    editNote(newNoteDetails, noteId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const note = await Note.findByIdAndUpdate({ _id: noteId },
+                    {
+                        $set: {
+                            title: newNoteDetails.title,
+                            content: newNoteDetails.content,
+                            tags: newNoteDetails.tags,
+                            isPinned: newNoteDetails.isPinned
+                        },
+                    },
+                    { new: true }
+                );
+                resolve(note);
+            } catch (error) {
+                console.error('Error creating user', error);
+                reject(error);
+            }
+        })
     }
 
 
