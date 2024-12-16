@@ -1,31 +1,33 @@
 import React, { useState } from 'react'
 import NavBar from '../../components/NavBar/NavBar'
-import { Link, Navigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import InputPassword from '../../components/Input/InputPassword'
 import { validateEmail } from '../../utils/helper';
 import axiosInstance from '../../utils/axiosInstance';
 function Login() {
 
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [error,setError] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if(!validateEmail(email)) {
+    if (!validateEmail(email)) {
       setError("Please enter a valid email");
       return;
     }
 
-    if(!password){
+    if (!password) {
       setError("Please enter a password");
       return;
     }
 
     setError("")
 
-    
+
     //Login API call
 
     try {
@@ -34,11 +36,11 @@ function Login() {
         password: password,
       });
 
-      console.log(response);
+      console.log('login response :', response);
 
-      if(response.data && response.data.accessToken) {
-        localStorage.setItem('token',response.data.accessToken);
-        Navigate("/dashboard")
+      if (response.data && response.data.accessToken) {
+        localStorage.setItem('token', response.data.accessToken);
+        navigate("/dashboard");
       }
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
@@ -62,11 +64,11 @@ function Login() {
             <h4 className='text-2xl mb-7'>Login</h4>
 
             <input type="text" className='input-box' placeholder='Email' value={email}
-              onChange={(e)=> setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
 
-            <InputPassword value={password} onChange={(e)=> setPassword(e.target.value)}/>
+            <InputPassword value={password} onChange={(e) => setPassword(e.target.value)} />
 
             {error && <p className='text-red-500 text-xs pb-1'>{error}</p>}
 
