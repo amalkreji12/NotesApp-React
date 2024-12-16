@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import NavBar from '../../components/NavBar/NavBar'
-import { Link } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 import InputPassword from '../../components/Input/InputPassword'
 import { validateEmail } from '../../utils/helper';
+import axiosInstance from '../../utils/axiosInstance';
 function Login() {
 
   const [email,setEmail] = useState("");
@@ -23,6 +24,30 @@ function Login() {
     }
 
     setError("")
+
+    
+    //Login API call
+
+    try {
+      const response = await axiosInstance.post("/login", {
+        email: email,
+        password: password,
+      });
+
+      console.log(response);
+
+      if(response.data && response.data.accessToken) {
+        localStorage.setItem('token',response.data.accessToken);
+        Navigate("/dashboard")
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        console.error(error)
+      };
+    };
+
   }
 
   return (
