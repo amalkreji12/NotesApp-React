@@ -11,6 +11,25 @@ router.get('/', (req, res) => {
 });
 
 
+router.get('/get-user', authenticateToken, (req, res) => {
+    const userId = req.user.user._id;
+
+    userHelper.getUserDetails(userId).then((user) => {
+        console.log(user)
+        return res.json({
+            error: false,
+            user
+        });
+    })
+    .catch((error) => {
+        res.status(401).json({
+            error: true,
+            error
+        });
+    });
+});
+
+
 router.post('/add-note', authenticateToken, (req, res) => {
     const { title, content, tags } = req.body;
     const user = req.user;
@@ -122,14 +141,14 @@ router.put('/pin-note/:noteId', authenticateToken, (req, res) => {
             message: "Note pinned successfully",
         });
     })
-    .catch((error) => {
-        console.error('Error pinning note:', error);
-        res.status(500).json({
-            error: true,
-            message: "Error pinning note",
-            error
+        .catch((error) => {
+            console.error('Error pinning note:', error);
+            res.status(500).json({
+                error: true,
+                message: "Error pinning note",
+                error
+            });
         });
-    });
 });
 
 

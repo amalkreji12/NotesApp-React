@@ -46,6 +46,18 @@ module.exports = {
         });
     },
 
+    getUserDetails(userId) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let user = await User.findOne({ _id: userId });
+                resolve(user);
+            } catch (error) {
+                console.error('Error getting user', error);
+                reject(error);
+            };
+        });
+    },
+
 
     addNote(noteDetails, userId) {
         return new Promise(async (resolve, reject) => {
