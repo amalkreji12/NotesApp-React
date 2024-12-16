@@ -115,6 +115,25 @@ module.exports = {
         })
     },
 
+    pinNote(noteId, isPinned) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let note = await Note.findByIdAndUpdate(noteId,
+                    {
+                        $set: {
+                            isPinned
+                        },
+                    },
+                    { new: true }
+                );
+                resolve(note);
+            } catch (error) {
+                console.error('Error pinning note', error);
+                reject(error);
+            };
+        });
+    },
+
 
 
 

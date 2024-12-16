@@ -108,8 +108,29 @@ router.delete('/delete-note/:noteId', authenticateToken, async (req, res) => {
             message: "Internal Server Error",
         });
     };
-})
+});
 
+
+router.put('/pin-note/:noteId', authenticateToken, (req, res) => {
+    const noteId = req.params.noteId;
+    const { isPinned } = req.body;
+
+    userHelper.pinNote(noteId, isPinned).then((note) => {
+        res.json({
+            error: false,
+            note,
+            message: "Note pinned successfully",
+        });
+    })
+    .catch((error) => {
+        console.error('Error pinning note:', error);
+        res.status(500).json({
+            error: true,
+            message: "Error pinning note",
+            error
+        });
+    });
+});
 
 
 
