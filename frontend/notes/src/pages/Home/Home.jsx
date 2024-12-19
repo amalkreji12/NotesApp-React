@@ -91,7 +91,9 @@ function Home() {
           noteData={openAddEditModal.data}
           onClose={() => {
             setOpenAddEditModal({ isShown: false, type: "add", data: null });
-          }} />
+          }}
+          getAllNote={getAllNote}
+           />
       </Modal>
     </div>
   )
