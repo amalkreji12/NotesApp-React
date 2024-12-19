@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import NavBar from '../../components/NavBar/NavBar'
 import NoteCard from '../../components/Cards/NoteCard'
@@ -18,6 +19,10 @@ function Home() {
   const [userInfo, setUserInfo] = useState(null);
 
   const navigate = useNavigate();
+
+  const handleEditNote = (noteDetails) => {
+    setOpenAddEditModal({ isShown:true, data:noteDetails, type:"edit"});
+  };
 
   //User info API
   const getUserInfo = async () => {
@@ -62,7 +67,7 @@ function Home() {
       <div className='container mx-auto px-4'>
         <div className='grid grid-cols-3 gap-4 mt-8'>
           {allNotes.map((items, index) => (
-            <NoteCard key={items._id} title={items.title} date={items.createdAt} content={items.content}  tags={items.tags} isPinned={items.isPinned} onEdit={() => { }}
+            <NoteCard key={items._id} title={items.title} date={items.createdAt} content={items.content}  tags={items.tags} isPinned={items.isPinned} onEdit={() => handleEditNote(items)}
               onDelete={() => { }} onPinNote={() => { }} />
           ))}
         </div>
