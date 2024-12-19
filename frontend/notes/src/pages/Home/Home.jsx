@@ -14,7 +14,7 @@ function Home() {
     data: null,
   });
 
-
+  const [allNotes, setAllNote] = useState([])
   const [userInfo, setUserInfo] = useState(null);
 
   const navigate = useNavigate();
@@ -35,11 +35,24 @@ function Home() {
     };
   };
 
-  useEffect(() => { 
+  //Get all Notes
+  const getAllNote = async () => {
+    try {
+      const response = await axiosInstance.get('/notes');
+      if (response.data && response.data.notes) {
+        setAllNote(response.data.notes);
+      }
+    } catch (error) {
+      console.log("Error getting all notes");
+    }
+  }
+
+  useEffect(() => {
+    getAllNote();
     getUserInfo();
-    return () => {}
+    return () => { }
   }, []);
-  
+
 
 
   return (
@@ -48,8 +61,10 @@ function Home() {
 
       <div className='container mx-auto px-4'>
         <div className='grid grid-cols-3 gap-4 mt-8'>
-          <NoteCard title='Test Demo Sample Test' date='10th Dec 2024' content='lorem ipsum dolor sit amet' tags='#test' isPinned={true} onEdit={() => { }}
-            onDelete={() => { }} onPinNote={() => { }} />
+          {allNotes.map((items, index) => (
+            <NoteCard key={items._id} title={items.title} date={items.createdAt} content={items.content}  tags={items.tags} isPinned={items.isPinned} onEdit={() => { }}
+              onDelete={() => { }} onPinNote={() => { }} />
+          ))}
         </div>
       </div>
 
