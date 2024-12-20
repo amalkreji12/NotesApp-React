@@ -42,7 +42,7 @@ function Home() {
   const handleCloseToast = () => {
     setShowToastMsg({
       isShown: false,
-      message:"",
+      message: "",
     });
   };
 
@@ -74,6 +74,27 @@ function Home() {
     }
   }
 
+  //Delete note API
+  const deleteNote = async (data) => {
+    const noteId = data._id
+    try {
+      const response = await axiosInstance.delete('/delete-note/' + noteId);
+
+      if (response.data && !response.data.error) {
+        showToastMessage("Note deleted successfully", 'delete');
+        getAllNote();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        console.log("An error occurred while deleting note");
+      }
+    }
+  }
+
   useEffect(() => {
     getAllNote();
     getUserInfo();
@@ -90,7 +111,7 @@ function Home() {
         <div className='grid grid-cols-3 gap-4 mt-8'>
           {allNotes.map((items, index) => (
             <NoteCard key={items._id} title={items.title} date={items.createdAt} content={items.content} tags={items.tags} isPinned={items.isPinned} onEdit={() => handleEditNote(items)}
-              onDelete={() => { }} onPinNote={() => { }} />
+              onDelete={() => deleteNote(items)} onPinNote={() => { }} />
           ))}
         </div>
       </div>
