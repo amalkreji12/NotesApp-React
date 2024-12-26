@@ -10,6 +10,7 @@ import axiosInstance from '../../utils/axiosInstance'
 import Toast from '../../components/ToastMessage/Toast'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import NoNotesImage from '../../assets/images/create.png'
+import NoNotesImg from '../../assets/images/no note.svg'
 
 function Home() {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -26,6 +27,8 @@ function Home() {
 
   const [allNotes, setAllNote] = useState([])
   const [userInfo, setUserInfo] = useState(null);
+
+  const [isSearch, setIsSearch] = useState(false);
 
   const navigate = useNavigate();
 
@@ -95,6 +98,27 @@ function Home() {
         console.log("An error occurred while deleting note");
       }
     }
+  };
+
+  //Search API
+  const searchNote = async (query) => {
+    try {
+      const response = await axiosInstance.get('/search', {
+        params: { query },
+      });
+
+      if (response.data && response.data.notes) {
+        setIsSearch(true);
+        setAllNote(response.data.notes);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setIsSearch(false);
+    getAllNote();
   }
 
   useEffect(() => {
@@ -107,7 +131,7 @@ function Home() {
 
   return (
     <div>
-      <NavBar userInfo={userInfo} />
+      <NavBar userInfo={userInfo} searchNote={searchNote} handleClearSearch={handleClearSearch} />
 
       <div className='container mx-auto px-4'>
         {allNotes.length > 0 ? (<div className='grid grid-cols-3 gap-4 mt-8'>
@@ -117,7 +141,9 @@ function Home() {
           ))}
         </div>
         ) : (
-          <EmptyCard imgSrc={NoNotesImage} message={`🎗️ No Notes Found
+          <EmptyCard imgSrc={isSearch ? NoNotesImg : NoNotesImage} 
+          message={isSearch ? `No Notes found !!` 
+            : `🎗️ No Notes Found
             Looks like you haven't created any notes yet. Click 'Add' button to get started!`} />
         )}
       </div>
