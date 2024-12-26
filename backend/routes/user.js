@@ -21,12 +21,12 @@ router.get('/get-user', authenticateToken, (req, res) => {
             user
         });
     })
-    .catch((error) => {
-        res.status(401).json({
-            error: true,
-            error
+        .catch((error) => {
+            res.status(401).json({
+                error: true,
+                error
+            });
         });
-    });
 });
 
 
@@ -146,6 +146,33 @@ router.put('/pin-note/:noteId', authenticateToken, (req, res) => {
             res.status(500).json({
                 error: true,
                 message: "Error pinning note",
+                error
+            });
+        });
+});
+
+router.get('/search', authenticateToken, (req, res) => {
+    const userId = req.user.user._id;
+    const { query } = req.query;
+
+    if (!query) {
+        return res.status(404).json({
+            error: true,
+            message: 'Search query is required',
+        });
+    };
+
+    userHelper.searchNotesByUser(query, userId).then((notes) => {
+        return res.json({
+            error: false,
+            notes,
+            message: 'Notes found successfully',
+        })
+    })
+        .catch((error) => {
+            return res.json({
+                error: true,
+                message: 'Error finding notes',
                 error
             });
         });

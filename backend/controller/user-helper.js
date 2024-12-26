@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const Note = require('../models/noteModel');
+const { Mongoose } = require('mongoose');
 
 module.exports = {
 
@@ -141,6 +142,25 @@ module.exports = {
                 resolve(note);
             } catch (error) {
                 console.error('Error pinning note', error);
+                reject(error);
+            };
+        });
+    },
+
+    searchNotesByUser(searchWord, user) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let searchTerm = searchWord.replace(/[^a-zA-Z0-9]/g, '_');
+
+                const notes = await Note.find({
+                    $or: [
+                        { title: { $regex: new RegExp(searchTerm, "i") } },
+                        { content: { $regex: new RegExp(searchTerm, "i") } }
+                    ],
+                }).where({ userId: new mongoose.Types.ObjectId(user) });
+                resolve(notes)
+            } catch (error) {
+                console.error('Error searching notes:', error);
                 reject(error);
             };
         });
