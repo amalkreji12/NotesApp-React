@@ -116,6 +116,24 @@ function Home() {
     }
   };
 
+  //Pin Note API
+  const updateIsPinned = async (noteData) => {
+    const noteId = noteData._id
+    try {
+      const response = await axiosInstance.put('/pin-note/' + noteId, {
+        "isPinned": !noteData.isPinned,
+      });
+
+      if (response.data && response.data.note) {
+        showToastMessage("Note updated successfully")
+        getAllNote();
+      }
+    } catch (error) {
+      console.log(error);
+    };
+  }
+
+
   const handleClearSearch = () => {
     setIsSearch(false);
     getAllNote();
@@ -137,13 +155,13 @@ function Home() {
         {allNotes.length > 0 ? (<div className='grid grid-cols-3 gap-4 mt-8'>
           {allNotes.map((items, index) => (
             <NoteCard key={items._id} title={items.title} date={items.createdAt} content={items.content} tags={items.tags} isPinned={items.isPinned} onEdit={() => handleEditNote(items)}
-              onDelete={() => deleteNote(items)} onPinNote={() => { }} />
+              onDelete={() => deleteNote(items)} onPinNote={() => updateIsPinned(items)} />
           ))}
         </div>
         ) : (
-          <EmptyCard imgSrc={isSearch ? NoNotesImg : NoNotesImage} 
-          message={isSearch ? `No Notes found !!` 
-            : `🎗️ No Notes Found
+          <EmptyCard imgSrc={isSearch ? NoNotesImg : NoNotesImage}
+            message={isSearch ? `No Notes found !!`
+              : `🎗️ No Notes Found
             Looks like you haven't created any notes yet. Click 'Add' button to get started!`} />
         )}
       </div>
