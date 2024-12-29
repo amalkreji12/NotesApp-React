@@ -108,8 +108,3 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## Contact
-
-For any inquiries or suggestions, feel free to contact me:
-- Email: your-email@example.com
-- GitHub: [your-username](https://github.com/your-username)
