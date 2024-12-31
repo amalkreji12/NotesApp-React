@@ -68,10 +68,10 @@ A full-stack notes application built with **React**, **Node.js**, **Express.js**
 ## Screenshots
 
 ### Homepage
-![Homepage](path/to/screenshot1.png)
+![Homepage](screenshots/home.png)
 
 ### Note Editor
-![Note Editor](path/to/screenshot2.png)
+![Note Editor](screenshots/view-edit.png)
 
 ---
 
