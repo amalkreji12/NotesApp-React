@@ -5,11 +5,10 @@ import LandingNavBar from '../../components/NavBar/LandingNavBar'
 const Landing = () => {
     return (
         <div>
-
             <LandingNavBar/>
 
-            <div>
-                <h3>Content</h3>
+            <div className='container'>
+                
             </div>
         </div>
     )
