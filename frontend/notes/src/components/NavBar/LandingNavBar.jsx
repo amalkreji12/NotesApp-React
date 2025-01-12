@@ -17,7 +17,7 @@ const LandingNavBar = () => {
                         {navItems.map((item, index) => (
                             <a
                                 key={index}
-                                href={`#${item.toLowerCase()}`}
+                                href={`${item.toLowerCase()}`}
                                 className="text-gray-700 hover:text-black transition"
                             >
                                 {item}
